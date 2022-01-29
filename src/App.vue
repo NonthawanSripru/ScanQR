@@ -90,13 +90,13 @@
                 </thead>
                 <tbody v-for="(user, index) in stock" :key="user.id">
                   <tr>
-                    <th scope="row">{{ user.id }}</th>
+                    <td>{{ user.id }}</td>
                     <td>{{ user.prod_name }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <th scope="row">{{ user.status }}</th>
+                    <td>{{ user.amount }}</td>
+                    <td>{{ user.remaining }}</td>
                     <td>{{ user.date }}</td>
-                    <td></td>
+                    <td>{{ user.employee }}</td>
                     <td>
                       <a href="#" @click.prevent="deleteUser(index)">x</a>
                     </td>
@@ -126,6 +126,7 @@
 
 <script>
 import { QrcodeStream } from "vue-qrcode-reader";
+import { db } from "./firebaseDb";
 
 export default {
   name: "app",
@@ -151,21 +152,53 @@ export default {
       // },
       error: "",
       alert:"",
+      productId:"",
       status: "Webcam ready!",
     };
   },
   components: { QrcodeStream },
+  created(){
+    this.init();
+  },
   methods: {
+    init(){
+       db.collection("stock")
+        .onSnapshot((snapshotChange) => {
+          this.stock = [];
+          snapshotChange.forEach((doc) => {
+            this.stock.push({
+            id: doc.id,
+            prod_name: doc.data().prod_name,
+            status: doc.data().status,
+            amount: doc.data().amount,
+            remaining: doc.data().remaining,
+            date: doc.data().date,
+            employee: doc.data().employee
+          });
+          });
+        });
+    },
     deleteUser(index) {
       this.stock.splice(index, 1);
     },
     async onDecode(result) {
-      this.dialog = true;
-      this.stock.push({
-        prod_name: result,
-        date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
-      });
+      /* eslint-disable */
+      var productId="";
 
+      db.collection("product")
+        .where("prod_name", "==", result)
+        .onSnapshot((snapshotChange) => {
+          snapshotChange.forEach((doc) => {
+            this.productId = doc.id;
+            document.getElementById('prod_id').value = this.productId;
+          });
+        });
+
+      // this.stock.push({
+      //   prod_name: result,
+      //   date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
+      // });
+      
       document.getElementById('prod_name').value = result;
 
       this.status = "Success re-prod_nameistration!";
