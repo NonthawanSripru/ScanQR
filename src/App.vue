@@ -1,165 +1,212 @@
 <template>
     <div id="app">
-        <table>
-            <tr>
-                <td width="60px"><img src="../src/assets/logo.png" width="50px"></td>
-                <td>
-                    <span class="table-title"><b>#re-registration event</b></span>
-                    <br>
-                    <span class="table-desc">Made with <span class="vue-font">Vue.js</span></span>
-                </td>
-            </tr>
-        </table>
+      <table>
+        <tr>
+          <td width="60px">
+            <img src="../src/assets/logo.png" width="50px" />
+          </td>
+          <td>
+            <span class="table-title"><b>Scan product for stock</b></span>
+            <br />
+            <span class="table-desc"
+              >User: <span class="vue-font">admin@mail.com</span></span
+            >
+          </td>
+        </tr>
+      </table>
 
-        <hr>
+      <hr />
 
-        <div class="row">
-            <div class="col-md-8">
-
-                <div class="card">
-                    <div class="card-header">
-                        Users has successfully re-registered!
-                        <download-excel class="btn btn-sm btn-success float-right" :data="users" :fields="users_fields" name="Data Users.xls">
-                        Export Excel
-                        </download-excel>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-responsive-sm table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">ID Register</th>
-                                    <th scope="col">Created at</th>
-                                    <th scope="col">Del</th>
-                                </tr>
-                            </thead>
-                            <tbody v-for="(user, index) in users" :key="user.id">
-                                <tr>
-                                    <th scope="row">{{ user.id }}</th>
-                                    <td>{{ user.reg }}</td>
-                                    <td>{{ user.date }}</td>
-                                    <td>
-                                        <a href="#" @click.prevent="deleteUser(index)">x</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              Product stock lists
+              <!-- <download-excel
+              class="btn btn-sm btn-success float-right"
+              :data="stock"
+              :fields="stock_fields"
+              name="Data stock.xls"
+            >
+              Export Excel
+            </download-excel> -->
             </div>
-            <div class="col-md-4">
-
-                <div class="card" style="width: 18rem;">
-                    <qrcode-stream @decode="onDecode" @init="onInit" />
-                    <div class="card-body">
-                        <p class="card-text">Please scan the qrcode event registration that we have sent via your email.</p>
-                        <hr>
-                        <div class="alert" :class="alert" role="alert">
-                            {{ status }}
-                        </div>
-                    </div>
+            <div class="main-block mt-3">
+              <h1>Stock Form</h1>
+              <form action="/">
+                <div class="info">
+                  <input class="fname" type="text" name="prod_id" placeholder="Product ID" id="prod_id" value=""/>
+                  <input class="fname" type="text" name="prod_name" placeholder="Product Name" id="prod_name" value=""/>
+                  <input type="number" name="amount" placeholder="Amount" id="amount" value="" />
+                  <input type="number" name="remaining" placeholder="Remaining" id="remaining" value=""/>
+                  <!-- <input type="text" name="name" placeholder="Order due date" /> -->
+                  <!-- <select>
+                    <option value="number">Number of guests </option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select> -->
                 </div>
+                <h4 class="mt-3">Status</h4>
+                <div class="status">
+                  <div>
+                    <input
+                      type="radio"
+                      value="in"
+                      id="radioOne"
+                      name="status"
+                      checked
+                    />
+                    <label for="radioOne" class="radio">Stock-in</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      value="out"
+                      id="radioTwo"
+                      name="status"
+                    />
+                    <label for="radioTwo" class="radio">Stock-out</label>
+                  </div>
+                </div>
+                <button href="/" class="button">Submit</button>
+              </form>
             </div>
+            <div class="card-body">
+              <table class="table table-responsive-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Remaining</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Del</th>
+                  </tr>
+                </thead>
+                <tbody v-for="(user, index) in stock" :key="user.id">
+                  <tr>
+                    <th scope="row">{{ user.id }}</th>
+                    <td>{{ user.prod_name }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ user.date }}</td>
+                    <td></td>
+                    <td>
+                      <a href="#" @click.prevent="deleteUser(index)">x</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-
+        <div class="col-md-4">
+          <div class="card" style="width: 18rem">
+            <qrcode-stream @decode="onDecode" @init="onInit" />
+            <div class="card-body">
+              <p class="card-text">
+                Please scan the qrcode of product for registed product to stock
+              </p>
+              <hr />
+              <div class="alert" :class="alert" role="alert">
+                {{ status }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 
 <script>
-
-import { QrcodeStream } from 'vue-qrcode-reader'
+import { QrcodeStream } from "vue-qrcode-reader";
 
 export default {
-  name: 'app',
+  name: "app",
   data() {
     return {
-      users: [
+      dialog: false,
+      stock: [
         {
           id: 1,
-          reg: 'B3092130',
-          date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+          prod_name: "B3092130",
+          date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
         },
         {
           id: 2,
-          reg: 'B3033130',
-          date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
-        }
+          prod_name: "B3033130",
+          date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
+        },
       ],
-      users_fields: {
-          'No': 'id',
-          'ID Register': 'reg',
-          'Created at': 'date',
-      },
-      error: '',
-      status: 'Webcam ready!',
-      alert: 'alert-warning',
-      idUser: 3
-    }
+      // stock_fields: {
+      //   No: "id",
+      //   "ID prod_nameister": "prod_name",
+      //   "Created at": "date",
+      // },
+      error: "",
+      alert:"",
+      status: "Webcam ready!",
+    };
   },
   components: { QrcodeStream },
   methods: {
     deleteUser(index) {
-      this.users.splice(index, 1)
+      this.stock.splice(index, 1);
     },
-    async onDecode (result) {
-      this.users.push({
-        id: this.idUser,
-        reg: result,
-        date: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-      })
+    async onDecode(result) {
+      this.dialog = true;
+      this.stock.push({
+        prod_name: result,
+        date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
+      });
 
-      this.idUser++
+      document.getElementById('prod_name').value = result;
 
-      let audio = await new Audio('http://soundbible.com/mp3/Bike Horn-SoundBible.com-602544869.mp3')
-      audio.play()
-
-      this.alert = 'alert-success'
-      this.status = 'Success re-registration!'
+      this.status = "Success re-prod_nameistration!";
       setTimeout(() => {
-        this.status = 'Webcam ready!',
-        this.alert = 'alert-warning'
-      }, 3000)
-
+        (this.status = "Webcam ready!"), (this.alert = "alert-warning");
+      }, 3000);
     },
 
-    async onInit (promise) {
+    async onInit(promise) {
       try {
-        await promise
+        await promise;
       } catch (error) {
-
-        let audio = await new Audio('http://soundbible.com/mp3/Industrial Alarm-SoundBible.com-1012301296.mp3')
-        audio.play()
-
-        if (error.name === 'NotAllowedError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: you need to grant camera access permisson"
-        } else if (error.name === 'NotFoundError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: no camera on this device"
-        } else if (error.name === 'NotSupportedError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: secure context required (HTTPS, localhost)"
-        } else if (error.name === 'NotReadableError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: is the camera already in use?"
-        } else if (error.name === 'OverconstrainedError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: installed cameras are not suitable"
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          this.alert = 'alert-danger'
-          this.status = "ERROR: Stream API is not supported in this browser"
+        if (error.name === "NotAllowedError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: you need to grant camera access permisson";
+        } else if (error.name === "NotFoundError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: no camera on this device";
+        } else if (error.name === "NotSupportedError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: secure context required (HTTPS, localhost)";
+        } else if (error.name === "NotReadableError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: is the camera already in use?";
+        } else if (error.name === "OverconstrainedError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: installed cameras are not suitable";
+        } else if (error.name === "StreamApiNotSupportedError") {
+          this.alert = "alert-danger";
+          this.status = "ERROR: Stream API is not supported in this browser";
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
 #app {
   color: #404040;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /*text-align: center;*/
@@ -171,14 +218,143 @@ export default {
 
 .table-title {
   font-size: 23px;
-  color: #404040
+  color: #404040;
 }
 
 .table-desc {
-  font-size: 17px
+  font-size: 17px;
 }
 
 .vue-font {
-  color: green; font-weight: bold
+  color: green;
+  font-weight: bold;
+}
+
+html,
+body {
+  height: 100%;
+}
+body,
+input,
+select {
+  padding: 0;
+  margin-left: 2;
+  outline: none;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 16px;
+  color: #095484;
+}
+h1,
+h3 {
+  font-weight: 400;
+}
+h1 {
+  font-size: 32px;
+}
+h3 {
+  color: #1c87c9;
+}
+.main-block,
+.info {
+  display: flex;
+  flex-direction: column;
+}
+.main-block {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100%;
+  background: url("/uploads/media/default/0001/01/e7a97bd9b2d25886cc7b9115de83b6b28b73b90b.jpeg")
+    no-repeat center;
+  background-size: cover;
+}
+form {
+  width: 80%;
+  padding: 25px;
+  margin-bottom: 20px;
+  background: wheat;
+}
+input,
+select {
+  padding: 5px;
+  margin-bottom: 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #095484;
+}
+input::placeholder {
+  color: #095484;
+}
+option {
+  background: #eee;
+  border: none;
+}
+.status {
+  display: flex;
+}
+input[type="radio"] {
+  display: none;
+}
+label.radio {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px;
+  text-indent: 32px;
+  cursor: pointer;
+}
+label.radio:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 2px solid #1c87c9;
+}
+label.radio:after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 4px;
+  top: 5px;
+  left: 5px;
+  border-bottom: 3px solid #1c87c9;
+  border-left: 3px solid #1c87c9;
+  transform: rotate(-45deg);
+  opacity: 0;
+}
+input[type="radio"]:checked + label:after {
+  opacity: 1;
+}
+button {
+  display: block;
+  width: 200px;
+  padding: 10px;
+  margin: 20px auto 0;
+  border: none;
+  border-radius: 5px;
+  background: #1c87c9;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+button:hover {
+  background: #095484;
+}
+@media (min-width: 568px) {
+  .info {
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+  input {
+    width: 46%;
+  }
+  input.fname {
+    width: 100%;
+  }
+  select {
+    width: 48%;
+  }
 }
 </style>
