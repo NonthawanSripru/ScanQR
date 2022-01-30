@@ -1,28 +1,28 @@
 <template>
-    <div id="app">
-      <table>
-        <tr>
-          <td width="60px">
-            <img src="../src/assets/logo.png" width="50px" />
-          </td>
-          <td>
-            <span class="table-title"><b>Scan product for stock</b></span>
-            <br />
-            <span class="table-desc"
-              >User: <span class="vue-font">admin@mail.com</span></span
-            >
-          </td>
-        </tr>
-      </table>
+  <div id="app">
+    <table>
+      <tr>
+        <td width="60px">
+          <img src="../src/assets/logo.png" width="50px" />
+        </td>
+        <td>
+          <span class="table-title"><b>Scan product for stock</b></span>
+          <br />
+          <span class="table-desc"
+            >User: <span class="vue-font">admin@mail.com</span></span
+          >
+        </td>
+      </tr>
+    </table>
 
-      <hr />
+    <hr />
 
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header">
-              Product stock lists
-              <!-- <download-excel
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            Product stock lists
+            <!-- <download-excel
               class="btn btn-sm btn-success float-right"
               :data="stock"
               :fields="stock_fields"
@@ -30,17 +30,43 @@
             >
               Export Excel
             </download-excel> -->
-            </div>
-            <div class="main-block mt-3">
-              <h1>Stock Form</h1>
-              <form action="/">
-                <div class="info">
-                  <input class="fname" type="text" name="prod_id" placeholder="Product ID" id="prod_id" value=""/>
-                  <input class="fname" type="text" name="prod_name" placeholder="Product Name" id="prod_name" value=""/>
-                  <input type="number" name="amount" placeholder="Amount" id="amount" value="" />
-                  <input type="number" name="remaining" placeholder="Remaining" id="remaining" value=""/>
-                  <!-- <input type="text" name="name" placeholder="Order due date" /> -->
-                  <!-- <select>
+          </div>
+          <div class="main-block mt-3">
+            <h1>Stock Form</h1>
+            <form>
+              <div class="info">
+                <input
+                  class="fname"
+                  type="text"
+                  name="prod_id"
+                  placeholder="Product ID"
+                  id="prod_id"
+                  value=""
+                />
+                <input
+                  class="fname"
+                  type="text"
+                  name="prod_name"
+                  placeholder="Product Name"
+                  id="prod_name"
+                  value=""
+                />
+                <input
+                  type="number"
+                  name="amount"
+                  placeholder="Amount"
+                  id="amount"
+                  value=""
+                />
+                <input
+                  type="number"
+                  name="remaining"
+                  placeholder="Remaining"
+                  id="remaining"
+                  value=""
+                />
+                <!-- <input type="text" name="name" placeholder="Order due date" /> -->
+                <!-- <select>
                     <option value="number">Number of guests </option>
                     <option value="10">10</option>
                     <option value="20">20</option>
@@ -48,80 +74,69 @@
                     <option value="40">40</option>
                     <option value="50">50</option>
                   </select> -->
+              </div>
+              <h4 class="mt-3">Status</h4>
+              <div class="status">
+                <div>
+                  <input type="radio" value="in" id="radioOne" name="status" checked/>
+                  <label for="radioOne" class="radio">Stock-in</label>
                 </div>
-                <h4 class="mt-3">Status</h4>
-                <div class="status">
-                  <div>
-                    <input
-                      type="radio"
-                      value="in"
-                      id="radioOne"
-                      name="status"
-                      checked
-                    />
-                    <label for="radioOne" class="radio">Stock-in</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      value="out"
-                      id="radioTwo"
-                      name="status"
-                    />
-                    <label for="radioTwo" class="radio">Stock-out</label>
-                  </div>
+                <div>
+                  <input type="radio" value="out" id="radioTwo" name="status"/>
+                  <label for="radioTwo" class="radio">Stock-out</label>
                 </div>
-                <button href="/" class="button">Submit</button>
-              </form>
-            </div>
-            <div class="card-body">
-              <table class="table table-responsive-sm table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">Product ID</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Remaining</th>
-                    <th scope="col">Created at</th>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Del</th>
-                  </tr>
-                </thead>
-                <tbody v-for="(user, index) in stock" :key="user.id">
-                  <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.prod_name }}</td>
-                    <th scope="row">{{ user.status }}</th>
-                    <td>{{ user.amount }}</td>
-                    <td>{{ user.remaining }}</td>
-                    <td>{{ user.date }}</td>
-                    <td>{{ user.employee }}</td>
-                    <td>
-                      <a href="#" @click.prevent="deleteUser(index)">x</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+              </div>
+              <button class="button" @click.prevent="addStock()">Submit</button>
+            </form>
+          </div>
+          <div class="card-body">
+            <table class="table table-responsive-sm table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Product ID</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Remaining</th>
+                  <th scope="col">Created at</th>
+                  <th scope="col">Employee</th>
+                  <th scope="col">Del</th>
+                </tr>
+              </thead>
+              <tbody v-for="(user, index) in stock" :key="user.id">
+                <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.prod_name }}</td>
+                  <th scope="row">{{ user.status }}</th>
+                  <td>{{ user.amount }}</td>
+                  <td>{{ user.remaining }}</td>
+                  <td>{{ user.date }}</td>
+                  <td>{{ user.employee }}</td>
+                  <td>
+                    <a href="#" @click.prevent="deleteUser(index)">x</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card" style="width: 18rem">
-            <qrcode-stream @decode="onDecode" @init="onInit" />
-            <div class="card-body">
-              <p class="card-text">
-                Please scan the qrcode of product for registed product to stock
-              </p>
-              <hr />
-              <div class="alert" :class="alert" role="alert">
-                {{ status }}
-              </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card" style="width: 18rem">
+          <qrcode-stream @decode="onDecode" @init="onInit" />
+          <div class="card-body">
+            <p class="card-text">
+              Please scan the qrcode of product for registed product to stock
+            </p>
+            <hr />
+            <div class="alert" :class="alert" role="alert">
+              {{ status }}
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -133,64 +148,52 @@ export default {
   data() {
     return {
       dialog: false,
-      stock: [
-        {
-          id: 1,
-          prod_name: "B3092130",
-          date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
-        },
-        {
-          id: 2,
-          prod_name: "B3033130",
-          date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
-        },
-      ],
+      stock: [],
       // stock_fields: {
       //   No: "id",
       //   "ID prod_nameister": "prod_name",
       //   "Created at": "date",
       // },
       error: "",
-      alert:"",
-      productId:"",
+      alert: "",
+      productId: "",
       status: "Webcam ready!",
     };
   },
   components: { QrcodeStream },
-  created(){
+  created() {
     this.init();
   },
   methods: {
-    init(){
-       db.collection("stock")
-        .onSnapshot((snapshotChange) => {
-          this.stock = [];
-          snapshotChange.forEach((doc) => {
-            this.stock.push({
+    init() {
+      db.collection("stock").onSnapshot((snapshotChange) => {
+        this.stock = [];
+        snapshotChange.forEach((doc) => {
+          this.stock.push({
             id: doc.id,
             prod_name: doc.data().prod_name,
             status: doc.data().status,
             amount: doc.data().amount,
             remaining: doc.data().remaining,
             date: doc.data().date,
-            employee: doc.data().employee
-          });
+            employee: doc.data().employee,
           });
         });
+      });
     },
     deleteUser(index) {
       this.stock.splice(index, 1);
     },
     async onDecode(result) {
       /* eslint-disable */
-      var productId="";
+      // var productId="";
 
       db.collection("product")
         .where("prod_name", "==", result)
         .onSnapshot((snapshotChange) => {
           snapshotChange.forEach((doc) => {
             this.productId = doc.id;
-            document.getElementById('prod_id').value = this.productId;
+            document.getElementById("prod_id").value = this.productId;
           });
         });
 
@@ -198,14 +201,42 @@ export default {
       //   prod_name: result,
       //   date: new Date().toJSON().slice(0, 10).replace(/-/g, "/"),
       // });
-      
-      document.getElementById('prod_name').value = result;
+
+      document.getElementById("prod_name").value = result;
 
       this.status = "Success re-prod_nameistration!";
       setTimeout(() => {
         (this.status = "Webcam ready!"), (this.alert = "alert-warning");
       }, 3000);
     },
+
+    async addStock() {
+      var obj = {};
+      (obj["prod_id"] = document.getElementById("prod_id").value),
+        (obj["prod_name"] = document.getElementById("prod_name").value),
+        (obj["status"] = document.querySelector('input[name="status"]:checked').value,
+        (obj["amount"] = document.getElementById("amount").value),
+        (obj["remaining"] = document.getElementById("remaining").value),
+        (obj["date"] = new Date().toJSON().slice(0, 10).replace(/-/g, "/")),
+        (obj["employee"] = "admin"))
+        console.log(obj)
+
+      db.collection("stock")
+        .add(obj)
+        .then(() => {
+          alert("Stock successfully added!");
+          document.getElementById("prod_id").value="";
+          document.getElementById("prod_name").value="";
+          document.getElementByName("status").value="";
+          document.getElementById("amount").value="";
+          document.getElementById("remaining").value="";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async removeStock() {},
 
     async onInit(promise) {
       try {
