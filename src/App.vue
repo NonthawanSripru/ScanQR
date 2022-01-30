@@ -93,17 +93,17 @@
             <table class="table table-responsive-sm table-bordered">
               <thead>
                 <tr>
-                  <th scope="col">Product ID</th>
+                  <th scope="col">Stock ID</th>
                   <th scope="col">Product Name</th>
                   <th scope="col">Status</th>
                   <th scope="col">Amount</th>
                   <th scope="col">Remaining</th>
                   <th scope="col">Created at</th>
                   <th scope="col">Employee</th>
-                  <th scope="col">Del</th>
+                  <!-- <th scope="col">Del</th> -->
                 </tr>
               </thead>
-              <tbody v-for="(user, index) in stock" :key="user.id">
+              <tbody v-for="user in stock" :key="user.id">
                 <tr>
                   <td>{{ user.id }}</td>
                   <td>{{ user.prod_name }}</td>
@@ -112,9 +112,9 @@
                   <td>{{ user.remaining }}</td>
                   <td>{{ user.date }}</td>
                   <td>{{ user.employee }}</td>
-                  <td>
+                  <!-- <td>
                     <a href="#" @click.prevent="deleteUser(index)">x</a>
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </table>
@@ -224,7 +224,7 @@ export default {
       db.collection("stock")
         .add(obj)
         .then(() => {
-          alert("Stock successfully added!");
+          alert("Stock successfully updated!");
           document.getElementById("prod_id").value="";
           document.getElementById("prod_name").value="";
           document.getElementByName("status").value="";
