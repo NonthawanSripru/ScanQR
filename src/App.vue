@@ -65,15 +65,6 @@
                   id="remaining"
                   value=""
                 />
-                <!-- <input type="text" name="name" placeholder="Order due date" /> -->
-                <!-- <select>
-                    <option value="number">Number of guests </option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                  </select> -->
               </div>
               <h4 class="mt-3">Status</h4>
               <div class="status">
@@ -157,6 +148,7 @@ export default {
       error: "",
       alert: "",
       productId: "",
+      productStock: "",
       status: "Webcam ready!",
     };
   },
@@ -193,7 +185,9 @@ export default {
         .onSnapshot((snapshotChange) => {
           snapshotChange.forEach((doc) => {
             this.productId = doc.id;
+            this.productStock = doc.data().remain;
             document.getElementById("prod_id").value = this.productId;
+            document.getElementById("remaining").value = this.productStock;
           });
         });
 
