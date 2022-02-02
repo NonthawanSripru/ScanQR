@@ -2,9 +2,9 @@
   <div id="app">
     <table>
       <tr>
-        <td width="60px">
+        <!-- <td width="60px">
           <img src="../src/assets/logo.png" width="50px" />
-        </td>
+        </td> -->
         <td>
           <span class="table-title"><b>Scan product for stock</b></span>
           <br />
@@ -69,11 +69,11 @@
               <h4 class="mt-3">Status</h4>
               <div class="status">
                 <div>
-                  <input type="radio" value="in" id="radioOne" name="status" checked/>
+                  <input type="radio" value="in" id="radioOne" name="status" />
                   <label for="radioOne" class="radio">Stock-in</label>
                 </div>
                 <div>
-                  <input type="radio" value="out" id="radioTwo" name="status"/>
+                  <input type="radio" value="out" id="radioTwo" name="status" />
                   <label for="radioTwo" class="radio">Stock-out</label>
                 </div>
               </div>
@@ -149,7 +149,17 @@ export default {
       alert: "",
       productId: "",
       productStock: "",
-      status: "Webcam ready!",
+      status: "Camera ready!",
+      remain: "",
+      product:{
+        prod_id:"",
+        prod_name:"",
+        category:"",
+        detail:"",
+        price:"",
+        remain: "",
+        image: ""
+      }
     };
   },
   components: { QrcodeStream },
@@ -183,11 +193,20 @@ export default {
       db.collection("product")
         .where("prod_name", "==", result)
         .onSnapshot((snapshotChange) => {
+          this.product={}
           snapshotChange.forEach((doc) => {
             this.productId = doc.id;
             this.productStock = doc.data().remain;
             document.getElementById("prod_id").value = this.productId;
             document.getElementById("remaining").value = this.productStock;
+            this.product.prod_id = doc.id;
+            this.product.prod_name = doc.data().prod_name
+            this.product.category = doc.data().category
+            this.product.detail = doc.data().detail
+            this.product.price = doc.data().price
+            this.product.image = doc.data().image
+            this.product.remain=  doc.data().remain
+          
           });
         });
 
@@ -200,37 +219,68 @@ export default {
 
       this.status = "Success re-prod_nameistration!";
       setTimeout(() => {
-        (this.status = "Webcam ready!"), (this.alert = "alert-warning");
+        (this.status = "Camera ready!"), (this.alert = "alert-warning");
       }, 3000);
     },
 
     async addStock() {
+      // var ex1 = document.getElementById("radioOne");
+      // var ex2 = document.getElementById("radioTwo");
+
+      if(document.querySelector('input[name="status"]:checked').value=="in"){
+        this.addS();
+      }else{
+        this.removeS();
+      }
+
       var obj = {};
       (obj["prod_id"] = document.getElementById("prod_id").value),
         (obj["prod_name"] = document.getElementById("prod_name").value),
-        (obj["status"] = document.querySelector('input[name="status"]:checked').value,
+        ((obj["status"] = document.querySelector(
+          'input[name="status"]:checked'
+        ).value),
         (obj["amount"] = document.getElementById("amount").value),
-        (obj["remaining"] = document.getElementById("remaining").value),
+        (obj["remaining"] = this.remain),
         (obj["date"] = new Date().toJSON().slice(0, 10).replace(/-/g, "/")),
-        (obj["employee"] = "admin"))
-        console.log(obj)
+        (obj["employee"] = "admin"));
+      // console.log(obj);
+      
+      this.product.remain= this.remain
 
       db.collection("stock")
         .add(obj)
         .then(() => {
           alert("Stock successfully updated!");
-          document.getElementById("prod_id").value="";
-          document.getElementById("prod_name").value="";
-          document.getElementByName("status").value="";
-          document.getElementById("amount").value="";
-          document.getElementById("remaining").value="";
+          document.getElementById("prod_id").value = "";
+          document.getElementById("prod_name").value = "";
+          document.getElementByTagName("status").value = "";
+          document.getElementById("amount").value = 0;
+          document.getElementById("remaining").value = 0;
         })
         .catch((error) => {
           console.log(error);
         });
+
+      db.collection("product")
+          .doc(this.product.prod_id)
+          .update(this.product)
+          .then(() => {
+            // alert("Product successfully updated!");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
     },
 
     async removeStock() {},
+
+    addS() {
+        this.remain = parseInt(document.getElementById("amount").value) + parseInt(this.productStock);
+    },
+    removeS() {
+        this.remain = parseInt(this.productStock) - parseInt(document.getElementById("amount").value)
+    },
 
     async onInit(promise) {
       try {
